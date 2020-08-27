@@ -1,6 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
+const DiscordRPC = require('discord-rpc');
+const clientId = '748367590870614016';
+
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -9,6 +12,21 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
+	const rpc = new DiscordRPC.Client({ transport: 'ipc' });
+	const startTimestamp = new Date();
+
+	rpc.setActivity({
+		details: "Testing my shitty ext.",
+		state: 'Visual Studio Code',
+		startTimestamp,
+		largeImageKey: 'vs-trans',
+		largeImageText: 'yes',
+		smallImageKey: 'vs-trans',
+		smallImageText: 'oof',
+		instance: false,
+	  });
+	rpc.login({ clientId }).catch(console.error);
+
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
