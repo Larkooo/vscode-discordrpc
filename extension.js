@@ -19,8 +19,9 @@ function activate(context) {
 	const fileNameNotSplit = vscode.window.activeTextEditor.document.fileName;
 	const fileNameSplitted = fileNameNotSplit.split("\\");
 	const fileName = fileNameSplitted.slice(-1)[0];
-	const extension = fileName.split(".")[1]
-	const lineAt = vscode.window.activeTextEditor.document.lineCount;
+	const extensionSplit = fileName.split(".")
+	const extension = extensionSplit.slice(-1)[0]
+	//const lineAt = vscode.window.activeTextEditor.document.lineCount;
 
 	function isInsider(){
 		if (vscode.env.appName == "Visual Studio Code - Insiders") {
