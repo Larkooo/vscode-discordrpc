@@ -49,6 +49,7 @@ function activate(context) {
 		// activity can only be set every 15 seconds
 	});
 	rpc.login({ clientId }).catch(console.error);
+	console.log('rpc on');
 
 	
 }
