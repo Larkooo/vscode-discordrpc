@@ -34,14 +34,15 @@ function activate(context) {
 	var fileNameSplitted = fileNameNotSplit.split("\\");
 	var fileName = fileNameSplitted.slice(-1)[0];
 
+	var extensionSplit = fileName.split(".")
+	var extension = extensionSplit.slice(-1)[0]
+
 	async function setActivity() {
 
-		const extensionSplit = fileName.split(".")
-		const extension = extensionSplit.slice(-1)[0]
 
 		rpc.setActivity({
 			details: "Editing " + fileName,
-			state: vscode.workspace.name,
+			state: "Working in " + vscode.workspace.name,
 			startTimestamp,
 			largeImageKey: 'vsci',
 			largeImageText: fileName,
@@ -55,6 +56,9 @@ function activate(context) {
 		fileNameNotSplit = event.document.fileName;
 		fileNameSplitted = fileNameNotSplit.split("\\");
 		fileName = fileNameSplitted.slice(-1)[0];
+
+		extensionSplit = fileName.split(".")
+		extension = extensionSplit.slice(-1)[0]
 
 		startTimestamp = new Date();
 	}); 
