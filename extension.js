@@ -14,13 +14,12 @@ const clientId = '748367590870614016';
 function activate(context) {
 
 	const rpc = new DiscordRPC.Client({ transport: 'ipc' });
-	const startTimestamp = new Date();
+	var startTimestamp = new Date();
 
-	const fileNameNotSplit = vscode.window.activeTextEditor.document.fileName;
-	const fileNameSplitted = fileNameNotSplit.split("\\");
-	const fileName = fileNameSplitted.slice(-1)[0];
-	const extensionSplit = fileName.split(".")
-	const extension = extensionSplit.slice(-1)[0]
+	var newFileNameNotSplit = vscode.window.activeTextEditor.document.fileName;
+	var newFileNameSplitted = newFileNameNotSplit.split("\\");
+	var newFileName = newFileNameSplitted.slice(-1)[0];
+
 	//const lineAt = vscode.window.activeTextEditor.document.lineCount;
 
 	function isInsider(){
@@ -31,22 +30,41 @@ function activate(context) {
 		}
 	}
 
+	var fileNameNotSplit = vscode.window.activeTextEditor.document.fileName;
+	var fileNameSplitted = fileNameNotSplit.split("\\");
+	var fileName = fileNameSplitted.slice(-1)[0];
+
 	async function setActivity() {
+
+		const extensionSplit = fileName.split(".")
+		const extension = extensionSplit.slice(-1)[0]
+
 		rpc.setActivity({
 			details: "Editing " + fileName,
-			state: extension,
+			state: vscode.workspace.name,
 			startTimestamp,
-			largeImageKey: isInsider() ? 'vsci':'vs-trans',
-			largeImageText: 'yes',
+			largeImageKey: 'vsci',
+			largeImageText: fileName,
 			smallImageKey: isInsider() ? 'vsci':'vs-trans',
 			smallImageText: isInsider() ? 'Insiders build':'Stable build',
 			instance: false,
 		  });
 	}
 
+	vscode.window.onDidChangeActiveTextEditor(event => {
+		fileNameNotSplit = event.document.fileName;
+		fileNameSplitted = fileNameNotSplit.split("\\");
+		fileName = fileNameSplitted.slice(-1)[0];
+
+		startTimestamp = new Date();
+	}); 
+
 	rpc.on('ready', () => {
 		setActivity();
 		// activity can only be set every 15 seconds
+		setInterval(() => {
+			setActivity();
+		  }, 15000);
 	});
 	rpc.login({ clientId }).catch(console.error);
 	console.log('rpc on');
