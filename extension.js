@@ -42,13 +42,13 @@ function activate(context) {
 
 	async function setActivity() {
 
-		var workspace = vscode.workspace.name
+		const workspace = vscode.workspace.name
 
 		rpc.setActivity({
 			details: idling ? "Idling":"Editing " + fileName,
 			state: workspace != null ? "Working in " + vscode.workspace.name:vscode.workspace.name,
 			startTimestamp,
-			largeImageKey: 'vsci',
+			largeImageKey: extension,
 			largeImageText: fileName,
 			smallImageKey: isInsider() ? 'vsci':'vs-trans',
 			smallImageText: isInsider() ? 'Insiders build':'Stable build',
