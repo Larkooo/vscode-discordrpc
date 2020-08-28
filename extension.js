@@ -19,7 +19,7 @@ function activate(context) {
 	//const lineAt = vscode.window.activeTextEditor.document.lineCount;
 
 	function isInsider(){
-		if (vscode.env.appName == "Visual Studio Code - Insiders") {
+		if (vscode.version.includes("insider")) {
 			return true;
 		} else {
 			return false;
@@ -33,10 +33,15 @@ function activate(context) {
 		var fileNameSplitted = fileNameNotSplit.split("\\");
 		var fileName = fileNameSplitted.slice(-1)[0];
 	
-		var extensionSplit = fileName.split(".")
-		var extension = extensionSplit.slice(-1)[0]
+		if (fileName.includes(".")) {
+			var extensionSplit = fileName.split(".")
+			var extension = extensionSplit.slice(-1)[0]
+		} else {
+			var extension = "vs"
+		}
 	} catch(err) {
 		idling = true
+		extension = "vs"
 		console.log(err)
 	}
 
@@ -51,7 +56,7 @@ function activate(context) {
 			largeImageKey: extension,
 			largeImageText: fileName,
 			smallImageKey: isInsider() ? 'vsci':'vs-trans',
-			smallImageText: isInsider() ? 'Insiders build':'Stable build',
+			smallImageText: vscode.version,
 			instance: false,
 		  });
 	}
@@ -61,12 +66,18 @@ function activate(context) {
 			fileNameNotSplit = event.document.fileName;
 			fileNameSplitted = fileNameNotSplit.split("\\");
 			fileName = fileNameSplitted.slice(-1)[0];
-	
-			extensionSplit = fileName.split(".")
-			extension = extensionSplit.slice(-1)[0]
+			
+			if (fileName.includes(".")) {
+				extensionSplit = fileName.split(".")
+				extension = extensionSplit.slice(-1)[0]
+			} else {
+				extension = "vs"
+			}
+			
 			idling = false;
 		} catch(err) {
 			idling = true;
+			extension = "vs"
 			console.log(err)
 		}
 		
