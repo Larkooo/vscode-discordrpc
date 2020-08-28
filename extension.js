@@ -48,14 +48,15 @@ function activate(context) {
 	async function setActivity() {
 
 		const workspace = vscode.workspace.name
+		const debugging = vscode.debug.activeDebugSession
 
 		rpc.setActivity({
-			details: idling ? "Idling":"Editing " + fileName,
+			details: idling ? "Idling": debugging != null ? "Debugging " + fileName:"Editing " + fileName,
 			state: workspace != null ? "Working in " + vscode.workspace.name:vscode.workspace.name,
 			startTimestamp,
 			largeImageKey: extension,
 			largeImageText: fileName,
-			smallImageKey: isInsider() ? 'vsci':'vs-trans',
+			smallImageKey: isInsider() ? 'insider':'stable',
 			smallImageText: vscode.version,
 			instance: false,
 		  });
