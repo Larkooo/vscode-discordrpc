@@ -16,10 +16,6 @@ function activate(context) {
 	const rpc = new DiscordRPC.Client({ transport: 'ipc' });
 	var startTimestamp = new Date();
 
-	var newFileNameNotSplit = vscode.window.activeTextEditor.document.fileName;
-	var newFileNameSplitted = newFileNameNotSplit.split("\\");
-	var newFileName = newFileNameSplitted.slice(-1)[0];
-
 	//const lineAt = vscode.window.activeTextEditor.document.lineCount;
 
 	function isInsider(){
@@ -30,19 +26,27 @@ function activate(context) {
 		}
 	}
 
-	var fileNameNotSplit = vscode.window.activeTextEditor.document.fileName;
-	var fileNameSplitted = fileNameNotSplit.split("\\");
-	var fileName = fileNameSplitted.slice(-1)[0];
+	var idling = false;
 
-	var extensionSplit = fileName.split(".")
-	var extension = extensionSplit.slice(-1)[0]
+	try {
+		var fileNameNotSplit = vscode.window.activeTextEditor.document.fileName;
+		var fileNameSplitted = fileNameNotSplit.split("\\");
+		var fileName = fileNameSplitted.slice(-1)[0];
+	
+		var extensionSplit = fileName.split(".")
+		var extension = extensionSplit.slice(-1)[0]
+	} catch(err) {
+		idling = true
+		console.log(err)
+	}
 
 	async function setActivity() {
 
+		var workspace = vscode.workspace.name
 
 		rpc.setActivity({
-			details: "Editing " + fileName,
-			state: "Working in " + vscode.workspace.name,
+			details: idling ? "Idling":"Editing " + fileName,
+			state: workspace != null ? "Working in " + vscode.workspace.name:vscode.workspace.name,
 			startTimestamp,
 			largeImageKey: 'vsci',
 			largeImageText: fileName,
@@ -53,12 +57,19 @@ function activate(context) {
 	}
 
 	vscode.window.onDidChangeActiveTextEditor(event => {
-		fileNameNotSplit = event.document.fileName;
-		fileNameSplitted = fileNameNotSplit.split("\\");
-		fileName = fileNameSplitted.slice(-1)[0];
-
-		extensionSplit = fileName.split(".")
-		extension = extensionSplit.slice(-1)[0]
+		try {
+			fileNameNotSplit = event.document.fileName;
+			fileNameSplitted = fileNameNotSplit.split("\\");
+			fileName = fileNameSplitted.slice(-1)[0];
+	
+			extensionSplit = fileName.split(".")
+			extension = extensionSplit.slice(-1)[0]
+			idling = false;
+		} catch(err) {
+			idling = true;
+			console.log(err)
+		}
+		
 
 		startTimestamp = new Date();
 	}); 
